@@ -2,72 +2,253 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Примитивный калькулятор</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
         .calculator {
-            width: 300px;
-            margin: 20px auto;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+            background: #62e1e8;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            width: 500px;
+            max-width: 100%;
+            border: 1px solid #dce4ec;
         }
+
+        .title {
+            color: #4a5568;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
         .display {
-            width: 100%;
-            height: 40px;
-            margin-bottom: 10px;
-            text-align: right;
-            font-size: 18px;
-            padding: 0 5px;
+            margin-bottom: 20px;
         }
+
+        #expressionInput {
+            width: 100%;
+            height: 70px;
+            font-size: 2rem;
+            text-align: right;
+            padding: 10px 15px;
+            border: 2px solid #cbd5e0;
+            border-radius: 15px;
+            background: #ffffff;
+            color: #2d3748;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            outline: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        #expressionInput:focus {
+            border-color: #4299e1;
+        }
+
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
+
         button {
-            padding: 15px;
-            font-size: 16px;
+            padding: 18px 0;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
             cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
+
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(0.95);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .btn-number {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-number:hover {
+            background: #cbd5e0;
+            color: #1a202c;
+        }
+
+        .btn-operator {
+            background: #fbbf24;
+            color: #1a202c;
+        }
+
+        .btn-operator:hover {
+            background: #f59e0b;
+        }
+
+        .btn-equals {
+            background: #4299e1;
+            color: #ffffff;
+            grid-column: span 1;
+        }
+
+        .btn-equals:hover {
+            background: #3182ce;
+        }
+
+        .btn-clear {
+            background: #fc8181;
+            color: #ffffff;
+        }
+
+        .btn-clear:hover {
+            background: #f56565;
+        }
+
         .history {
-            margin-top: 15px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            max-height: 150px;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .history-title {
+            color: #4a5568;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .history-title span {
+            font-size: 1.2rem;
+        }
+
+        .history-clear-btn {
+            background: #edf2f7;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #4a5568;
+        }
+
+        .history-clear-btn:hover {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        #historyList {
+            max-height: 200px;
             overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .history-item {
+            background: #f7fafc;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 10px;
+            color: #2d3748;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            border-left: 3px solid #4299e1;
+            word-break: break-all;
+        }
+
+        .history-item:hover {
+            background: #edf2f7;
+        }
+
+        .history-empty {
+            color: #a0aec0;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #edf2f7;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <input type="text" class="display" id="display" readonly>
-        <div class="buttons">
-            <button onclick="appendToDisplay('7')">7</button>
-            <button onclick="appendToDisplay('8')">8</button>
-            <button onclick="appendToDisplay('9')">9</button>
-            <button onclick="appendToDisplay('/')">/</button>
-
-            <button onclick="appendToDisplay('4')">4</button>
-            <button onclick="appendToDisplay('5')">5</button>
-            <button onclick="appendToDisplay('6')">6</button>
-            <button onclick="appendToDisplay('*')">*</button>
-
-            <button onclick="appendToDisplay('1')">1</button>
-            <button onclick="appendToDisplay('2')">2</button>
-            <button onclick="appendToDisplay('3')">3</button>
-            <button onclick="appendToDisplay('-')">-</button>
-
-            <button onclick="appendToDisplay('0')">0</button>
-            <button onclick="appendToDisplay('.')">.</button>
-            <button onclick="calculate()" class="equals">=</button>
-            <button onclick="appendToDisplay('+')">+</button>
+        <div class="title">Калькулятор</div>
+        
+        <div class="display">
+            <input type="text" id="expressionInput" placeholder="0" readonly>
         </div>
-        <div class="history" id="history">
-            <h4>История вычислений:</h4>
+
+        <div class="buttons">
+            <button class="btn-number" data-value="7">7</button>
+            <button class="btn-number" data-value="8">8</button>
+            <button class="btn-number" data-value="9">9</button>
+            <button class="btn-operator" data-op="/">÷</button>
+            
+            <button class="btn-number" data-value="4">4</button>
+            <button class="btn-number" data-value="5">5</button>
+            <button class="btn-number" data-value="6">6</button>
+            <button class="btn-operator" data-op="*">×</button>
+            
+            <button class="btn-number" data-value="1">1</button>
+            <button class="btn-number" data-value="2">2</button>
+            <button class="btn-number" data-value="3">3</button>
+            <button class="btn-operator" data-op="-">-</button>
+            
+            <button class="btn-number" data-value="0">0</button>
+            <button class="btn-number" data-value="."">.</button>
+            <button class="btn-clear" id="clearBtn">C</button>
+            <button class="btn-operator" data-op="+">+</button>
+            
+            <button class="btn-equals" id="equalsBtn">=</button>
+        </div>
+
+        <div class="history">
+            <div class="history-title">
+                <span>История действий</span>
+                <div class="history-clear-btn" id="clearHistoryBtn">Очистить</div>
+            </div>
+            <div id="historyList">
+                <div class="history-empty">История пуста</div>
+            </div>
         </div>
     </div>
-
-    <script src="script.js"></script>
+      <script src="script.js"></script>
 </body>
 </html>
